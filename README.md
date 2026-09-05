@@ -2,6 +2,8 @@
 
 一個給高年級小學生的遊戲化作文練習網頁，目標是準備**全民中文能力檢定（CWT）初等**寫作。
 
+**線上版：<https://chunyenwu-rehab.github.io/writing-quest/>**
+
 孩子用闖關、升級、集徽章的方式練習審題與分段，寫作規劃在網頁上完成、當場給經驗值回饋，稿紙只負責最後謄寫。
 
 ## 特色
@@ -32,7 +34,11 @@
 這是純靜態網頁，任選一個免費平台。
 **記得整個資料夾一起上傳**（`index.html` 以外還有 `manifest.webmanifest` 和三個 `icon-*.png`，主畫面圖示要靠它們）：
 
-### 方法一：GitHub Pages
+### 方法一：GitHub Pages（本專案目前用這個）
+已經部署在 <https://chunyenwu-rehab.github.io/writing-quest/>。
+之後改完只要 `git push`，一兩分鐘後線上版就會更新。
+
+第一次設定的步驟：
 1. 在 GitHub 建一個新 repo，把這個資料夾的檔案上傳。
 2. 進 repo 的 **Settings → Pages**。
 3. Source 選 `main` branch、根目錄 `/`，按 Save。
