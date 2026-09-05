@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>作文冒險：中檢初級闖關</title>
+<meta name="description" content="給高年級小學生的遊戲化作文練習，用闖關的方式準備全民中文能力檢定（CWT）初等寫作。">
+<meta name="theme-color" content="#1b2a4a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="作文冒險">
+<style>
+  :root{
+    --ink:#1b2a4a;--ink-2:#2d4270;--parch:#f5efe1;--parch-2:#efe6d2;
+    --gold:#e0a531;--gold-deep:#c07d1a;--jade:#2e9e6b;--coral:#e0603f;
+    --paper:#fffdf7;--line:#d8ccae;--muted:#7a6f58;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:
+     radial-gradient(1200px 600px at 80% -10%, #24365c 0%, transparent 60%),
+     linear-gradient(160deg,#16233f,#1b2a4a 60%,#16233f);
+    min-height:100%;color:var(--ink);
+    font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    line-height:1.7;
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+  .wrap{max-width:760px;margin:0 auto;padding:16px;
+    padding-left:calc(16px + env(safe-area-inset-left));
+    padding-right:calc(16px + env(safe-area-inset-right))}
+  .hero{background:linear-gradient(150deg,#213458,#18243f);
+    border:1px solid #34486f;border-radius:20px;padding:22px 20px 18px;
+    box-shadow:0 18px 40px rgba(0,0,0,.35);position:relative;overflow:hidden;margin-top:8px}
+  .hero::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;
+    background:radial-gradient(circle,rgba(224,165,49,.22),transparent 70%)}
+  .hero h1{color:var(--parch);font-size:22px;letter-spacing:.5px;display:flex;align-items:center;gap:9px}
+  .hero .pen{font-size:22px}
+  .whoami{display:flex;align-items:center;gap:9px;margin-top:9px;color:#c2cfe6;font-size:13px;flex-wrap:wrap}
+  .whoami b{color:var(--parch);font-size:15.5px;letter-spacing:.5px}
+  .whoami button{background:rgba(224,165,49,.14);border:1px solid rgba(224,165,49,.55);color:var(--gold);
+    font-family:inherit;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;cursor:pointer}
+  .whoami button:active{transform:scale(.94)}
+  .lvlrow{display:flex;align-items:baseline;gap:10px;margin-top:14px;color:var(--parch)}
+  .lvlbig{font-size:40px;font-weight:800;color:var(--gold);line-height:1}
+  .lvltxt{font-size:14px;color:#c2cfe6}
+  .titlepill{margin-left:auto;background:rgba(224,165,49,.16);border:1px solid var(--gold);
+    color:var(--gold);font-size:13px;padding:5px 12px;border-radius:999px;font-weight:700;white-space:nowrap}
+  .xpbar{margin-top:14px;height:16px;background:#0f1a30;border-radius:999px;overflow:hidden;
+    border:1px solid #34486f;position:relative}
+  .xpfill{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));
+    width:0;transition:width .8s cubic-bezier(.2,.9,.3,1);border-radius:999px}
+  .xpnum{font-size:12px;color:#c2cfe6;margin-top:6px;display:flex;justify-content:space-between}
+  .tabs{display:flex;gap:6px;margin:18px 0 10px;background:#0f1a30;padding:5px;border-radius:14px;border:1px solid #34486f}
+  .tab{flex:1;text-align:center;padding:9px 4px;border-radius:10px;color:#9fb0cd;font-size:14px;
+    font-weight:700;cursor:pointer;transition:.2s;border:none;background:none;font-family:inherit}
+  .tab.on{background:linear-gradient(150deg,var(--parch),var(--parch-2));color:var(--ink)}
+  .panel{display:none;animation:fade .35s ease}.panel.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;
+    margin-bottom:14px;box-shadow:0 8px 22px rgba(10,20,40,.18)}
+  .card h2{font-size:17px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .card .sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+  .tierhead{display:flex;align-items:center;gap:8px;margin:20px 0 10px;padding-bottom:7px;
+    border-bottom:2px solid var(--line);flex-wrap:wrap}
+  .tierhead:first-child{margin-top:2px}
+  .tierhead b{font-size:15.5px}
+  .tierhead .td{font-size:12px;color:var(--muted)}
+  .tierhead .tc{margin-left:auto;font-size:12px;font-weight:800;color:var(--gold-deep);white-space:nowrap}
+  .quest{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:11px;
+    background:linear-gradient(180deg,#fffdf7,#faf5e9);position:relative;transition:.2s}
+  .quest.done{background:linear-gradient(180deg,#f0f8f2,#e6f4ec);border-color:#bfe3cd}
+  .qtop{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+  .qtype{font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;color:#fff;letter-spacing:.5px}
+  .t-記敘{background:#3f74c0}.t-抒情{background:#c0603f}.t-想像{background:#8a5cc0}
+  .t-擬人{background:#2e9e6b}.t-說明{background:#c07d1a}
+  .qtitle{font-weight:800;font-size:16px}
+  .qxp{margin-left:auto;color:var(--gold-deep);font-weight:800;font-size:14px;white-space:nowrap}
+  .qhint{font-size:13px;color:var(--muted);margin:6px 0 10px}
+  .qprog{display:flex;gap:5px;margin:8px 0 10px}
+  .qstep{flex:1;height:6px;border-radius:4px;background:#e6dcc4}
+  .qstep.on{background:linear-gradient(90deg,var(--gold),var(--gold-deep))}
+  .qbtns{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:none;font-family:inherit;font-weight:700;font-size:14px;padding:9px 15px;border-radius:10px;
+    cursor:pointer;transition:.15s;background:var(--ink);color:var(--parch)}
+  .btn:active{transform:scale(.96)}
+  .btn.ghost{background:#efe7d3;color:var(--ink)}
+  .btn.gold{background:linear-gradient(150deg,var(--gold),var(--gold-deep));color:#fff}
+  .btn.jade{background:var(--jade);color:#fff}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .badge-done{color:var(--jade);font-weight:800;font-size:14px;display:flex;align-items:center;gap:5px}
+  .step{display:flex;gap:11px;padding:11px 0;border-bottom:1px dashed var(--line)}
+  .step:last-child{border-bottom:none}
+  .stepnum{flex-shrink:0;width:26px;height:26px;border-radius:8px;background:var(--ink);color:var(--gold);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px}
+  .step b{font-size:15px}.step p{font-size:13px;color:var(--muted)}
+  .checkitem{display:flex;align-items:flex-start;gap:11px;padding:10px 0;cursor:pointer;border-bottom:1px dashed var(--line)}
+  .checkitem:last-child{border-bottom:none}
+  .cbox{flex-shrink:0;width:24px;height:24px;border:2px solid var(--ink-2);border-radius:7px;
+    display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;transition:.15s}
+  .checkitem.ck .cbox{background:var(--jade);border-color:var(--jade)}
+  .checkitem span{font-size:14.5px;padding-top:1px}
+  .checkitem.ck span{color:var(--muted);text-decoration:line-through}
+  .skill{margin-bottom:16px}
+  .skhead{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .skicon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .skhead b{font-size:15px}.skhead .lv{margin-left:auto;font-size:12px;font-weight:800;color:var(--gold-deep)}
+  .pips{display:flex;gap:5px}
+  .pip{flex:1;height:9px;border-radius:5px;background:#e6dcc4;transition:.4s}
+  .pip.fill{background:linear-gradient(90deg,var(--gold),var(--gold-deep))}
+  .badgegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+  .bg{aspect-ratio:1;border-radius:16px;border:1px solid var(--line);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:6px;text-align:center;padding:8px;background:#faf5e9;
+    filter:grayscale(1);opacity:.45;transition:.4s}
+  .bg.got{filter:none;opacity:1;background:linear-gradient(160deg,#fff8e8,#fbedcf);
+    border-color:var(--gold);box-shadow:0 6px 16px rgba(224,165,49,.3)}
+  .bg .em{font-size:30px}.bg .bn{font-size:12px;font-weight:800;line-height:1.3}.bg .bd{font-size:10.5px;color:var(--muted);line-height:1.3}
+  .modal{position:fixed;inset:0;background:rgba(12,20,38,.72);display:none;align-items:flex-start;
+    justify-content:center;padding:22px 16px;z-index:50;backdrop-filter:blur(3px);overflow-y:auto}
+  .modal.on{display:flex;animation:fade .25s}
+  .sheet{background:var(--paper);border-radius:20px;max-width:480px;width:100%;padding:22px;
+    margin:auto;box-shadow:0 30px 60px rgba(0,0,0,.5)}
+  .sheet h3{font-size:19px;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sheet .body{font-size:14.5px;color:#3a3320;line-height:1.75}
+  .sheet .body p{margin-bottom:9px}.sheet .body .lead{font-weight:800;color:var(--ink)}
+  .exbox{background:#f3ecda;border-left:4px solid var(--gold);border-radius:8px;padding:11px 13px;font-size:14px;margin:8px 0}
+  .close{width:100%;margin-top:14px}
+  .planhead{display:flex;align-items:center;gap:8px;background:#eef4fb;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+  .planhead .pn{background:var(--ink);color:var(--gold);width:28px;height:28px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+  .planhead b{font-size:15px}
+  .planbar{display:flex;gap:5px;margin-bottom:14px}
+  .planbar div{flex:1;height:7px;border-radius:4px;background:#e6dcc4;transition:.3s}
+  .planbar div.on{background:linear-gradient(90deg,var(--jade),#26875a)}
+  .fieldlabel{font-weight:800;font-size:14px;margin:2px 0 4px;color:var(--ink)}
+  .fieldhint{font-size:12.5px;color:var(--muted);margin-bottom:9px}
+  /* 字級一定要 >=16px：iOS Safari 對比較小的輸入框會自動放大整頁，打字時畫面會抖 */
+  textarea,input.txt{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;
+    font-family:inherit;font-size:16px;color:var(--ink);background:#fffdf7;resize:vertical;line-height:1.7}
+  textarea:focus,input.txt:focus{outline:none;border-color:var(--gold)}
+  .segblue{border-left:4px solid #3f74c0;background:#eef4fb;border-radius:8px;padding:9px 12px;font-size:13.5px;margin-bottom:8px}
+  .segblue b{color:#2d5490}
+  .optlist{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+  .opt{display:flex;align-items:flex-start;gap:10px;border:1.5px solid var(--line);background:#fffdf7;
+    border-radius:11px;padding:10px 12px;font-size:14px;cursor:pointer;transition:.15s;font-family:inherit;text-align:left;color:var(--ink)}
+  .opt .ck{flex-shrink:0;width:22px;height:22px;border:2px solid var(--ink-2);border-radius:6px;
+    display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;transition:.15s}
+  .opt.pick{border-color:var(--gold);background:#fff8e8}
+  .opt.pick .ck{background:var(--gold);border-color:var(--gold-deep)}
+  .opt.right{border-color:var(--jade);background:#eaf6ef}
+  .opt.right .ck{background:var(--jade);border-color:var(--jade)}
+  .opt.wrong{border-color:var(--coral);background:#fbeae6}
+  .opt.wrong .ck{background:var(--coral);border-color:var(--coral)}
+  .livexp{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--gold-deep);
+    margin-top:4px;background:#fff8e8;border-radius:9px;padding:8px 11px;transition:.2s}
+  .livexp .tags{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+  .livexp .tg{background:var(--jade);color:#fff;font-size:10.5px;padding:2px 7px;border-radius:999px;font-weight:800}
+  .navrow{display:flex;gap:8px;margin-top:16px}.navrow .btn{flex:1}
+  .okmsg{background:#e6f4ec;border-radius:10px;padding:10px 12px;font-size:13.5px;color:#1d6a44;margin-top:10px;display:none}
+  .okmsg.on{display:block;animation:fade .3s}
+  .planReview{background:#f3ecda;border-radius:10px;padding:12px;font-size:13.5px;line-height:1.7;margin-top:6px}
+  .planReview .r{margin-bottom:6px}.planReview .r b{color:var(--ink)}
+  .stars{font-size:34px;letter-spacing:4px;text-align:center;margin:6px 0}
+  .levelup{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60;background:rgba(12,20,38,.8);backdrop-filter:blur(4px)}
+  .levelup.on{display:flex}
+  .lucard{text-align:center;color:var(--parch);animation:pop .5s cubic-bezier(.2,1.3,.4,1)}
+  @keyframes pop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+  .lucard .big{font-size:56px;color:var(--gold);font-weight:800;text-shadow:0 4px 20px rgba(224,165,49,.6)}
+  .lucard .t2{font-size:20px;margin-top:4px}.lucard .t3{font-size:14px;color:#c2cfe6;margin-top:8px}
+  .confetti{position:fixed;width:9px;height:14px;top:-20px;z-index:59;pointer-events:none}
+  .reset{text-align:center;margin-top:20px}
+  .reset button{background:none;border:none;color:#6d7fa0;font-size:12px;text-decoration:underline;cursor:pointer;font-family:inherit}
+  .foot{text-align:center;color:#6d7fa0;font-size:12px;margin-top:14px;line-height:1.6}
+  .savebar{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  /* 列印：開著藍圖時按列印，只會印出那張藍圖 */
+  @media print{
+    html,body{background:#fff!important;padding:0!important}
+    .wrap,.levelup,#toast{display:none!important}
+    .modal{position:static!important;background:none!important;backdrop-filter:none!important;
+      padding:0!important;overflow:visible!important;display:none}
+    .modal.on{display:block!important}
+    .sheet{box-shadow:none!important;max-width:none!important;padding:0!important}
+    .navrow,.btn,.stars{display:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1><span class="pen">🖋️</span> 作文冒險</h1>
+    <div class="whoami">練習生 <b id="heroName">—</b>
+      <button onclick="openNameGate(true)">改名</button></div>
+    <div class="lvlrow">
+      <span class="lvlbig" id="lvlNum">1</span>
+      <span class="lvltxt">等級<br>Writer Lv.</span>
+      <span class="titlepill" id="rankName">見習寫手</span>
+    </div>
+    <div class="xpbar"><div class="xpfill" id="xpFill"></div></div>
+    <div class="xpnum"><span id="xpNow">0 XP</span><span id="xpNext">下一級 100 XP</span></div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" data-tab="quests">任務</button>
+    <button class="tab" data-tab="guide">攻略</button>
+    <button class="tab" data-tab="skills">技能樹</button>
+    <button class="tab" data-tab="badges">徽章</button>
+  </div>
+
+  <div class="panel on" id="quests">
+    <div class="card">
+      <h2>📜 任務板</h2>
+      <div class="sub">每題三關：先做「作戰計畫」（審題＋動手寫大綱），寫越細 XP 越高！再去稿紙謄寫，最後對照稿紙做自我檢查。不用等批改。<br>
+        標「年份真題」的是 CWT 全民中檢初等考過的題目，從 🌱 入門區開始最順。</div>
+      <div id="questList"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="guide">
+    <div class="card">
+      <h2>🗺️ 作戰計畫怎麼玩</h2>
+      <div class="sub">點任務的「做計畫」，會帶你闖四關：</div>
+      <div class="step"><div class="stepnum">1</div><div><b>審題挑戰</b><p>從一堆選項裡挑出「一定要寫」的，避開偏題陷阱。</p></div></div>
+      <div class="step"><div class="stepnum">2</div><div><b>段落藍圖</b><p>每段動手打一點內容，寫越具體 XP 越高。</p></div></div>
+      <div class="step"><div class="stepnum">3</div><div><b>主場景放大</b><p>把最重要那一幕打出來，有五感、對話、比喻就加碼。</p></div></div>
+      <div class="step"><div class="stepnum">4</div><div><b>結尾感受</b><p>打出結尾想留下的想法，依內容給分。</p></div></div>
+    </div>
+    <div class="card">
+      <h2>✍️ 內容怎麼加分</h2>
+      <div class="sub">打字時系統會偵測這些技巧，用到就加碼 XP（那一段要寫到 12 個字以上才開始算喔）：</div>
+      <div class="exbox">👀 <b>五感詞</b>：寫出具體的感覺——冷、燙、香、酸、軟、刺、亮…（只寫「看」「聽」的話，要用到兩種以上才算）</div>
+      <div class="exbox">💬 <b>對話</b>：用「」寫出誰說了什麼，引號裡至少要有一句話</div>
+      <div class="exbox">🎨 <b>比喻</b>：把 A 說成 B，像「教室<b>像</b>被打開的汽水瓶」「臉紅得<b>像</b>蘋果<b>一樣</b>」；只寫「我好像忘記了」不算比喻</div>
+      <div class="exbox">🔊 <b>狀聲詞</b>：哈哈、咕嚕、砰、嘩、噗…</div>
+      <div class="exbox">🚫 同一個字一直重複（「啊啊啊啊啊」）不會變成字數，要寫真的內容才有分。</div>
+    </div>
+    <div class="card">
+      <h2>✅ 寫完後自我檢查</h2>
+      <div class="sub">寫完一篇就對照著看一遍，這裡先隨便勾著練習。</div>
+      <div id="checkList"></div>
+      <div class="fieldhint" id="checkNote" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <h2>⭐ 六級分階梯</h2>
+      <div class="sub">看看這篇大概在哪一階，下一階要補什麼。</div>
+      <div id="ladder"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="skills">
+    <div class="card"><h2>🌳 我的技能樹</h2>
+      <div class="sub">中檢作文看四種能力，每練一次相關技巧就會亮一格。</div>
+      <div id="skillList"></div></div>
+  </div>
+  <div class="panel" id="badges">
+    <div class="card"><h2>🏅 成就徽章</h2>
+      <div class="sub">達成里程碑就能點亮徽章，灰色的快去解鎖！</div>
+      <div class="badgegrid" id="badgeGrid"></div></div>
+  </div>
+
+  <div class="reset savebar">
+    <button onclick="exportSave()">💾 匯出進度（存成檔案）</button>
+    <button onclick="document.getElementById('importFile').click()">📂 匯入進度</button>
+    <button onclick="hardReset()">重新開始一切進度</button>
+  </div>
+  <input type="file" id="importFile" accept="application/json,.json" style="display:none"
+    onchange="if(this.files[0])importSave(this.files[0]);this.value=''">
+  <div class="foot">作伙來，一起把每一次的進步，變成下一次的能力 ✏️</div>
+</div>
+
+<div class="modal" id="modal"><div class="sheet" id="sheetBody"></div></div>
+<div class="levelup" id="levelup" onclick="this.classList.remove('on')">
+  <div class="lucard"><div class="big" id="luLvl">Lv.2</div><div class="t2" id="luRank">初級冒險者</div>
+    <div class="t3" id="luMsg">恭喜升級！點一下繼續 →</div></div>
+</div>
+
+<script>
+const RANKS=[{lv:1,name:"見習寫手"},{lv:2,name:"初級冒險者"},{lv:3,name:"故事採集者"},
+  {lv:4,name:"文字工匠"},{lv:5,name:"描寫高手"},{lv:6,name:"中檢挑戰者"},{lv:7,name:"作文大師"},
+  {lv:8,name:"六級分獵人"},{lv:9,name:"作文宗師"},{lv:10,name:"中檢傳說"}];
+const LVL_XP=[0,120,300,540,840,1200,1650,2200,2900,3800];   // 長度需與 RANKS 一致（每級一個門檻）
+
+// 任務板的三個難度分區（題目物件用 tier:1/2/3 對應）
+const TIERS=[
+ {n:1,icon:"🌱",name:"入門",d:"最好取材的題目，先從這裡開始"},
+ {n:2,icon:"⚔️",name:"進階",d:"練單點放大和細節描寫"},
+ {n:3,icon:"🔥",name:"挑戰",d:"抽象情感、論說、擬人，難度較高"}];
+
+// options: 每個 {t:文字, ok:true=必寫 / false=陷阱}
+const QUESTS=[
+ {id:"q1",tier:1,type:"記敘",title:"老師笑了",writeXp:60,focus:"聚焦單一鏡頭",
+  hint:"寫一次老師笑了的真實事件，用對話、表情、聲音把那一刻放大。",
+  options:[
+   {t:"老師平常的樣子（嚴肅或親切）",ok:true},
+   {t:"是什麼事讓老師笑了",ok:true},
+   {t:"老師笑的表情、動作",ok:true},
+   {t:"全班氣氛的改變",ok:true},
+   {t:"抱怨老師平常很兇",ok:false},
+   {t:"介紹整間學校的環境",ok:false},
+   {t:"寫別的同學的糗事佔滿全文",ok:false}],
+  segs:[
+   {t:"開頭",d:"點出老師平常很嚴肅，讓『笑』有反差。"},
+   {t:"起因",d:"那一次發生了什麼事？（誰說了什麼、做了什麼）"},
+   {t:"主場景",d:"老師笑的慢動作：嘴角→肩膀→笑出聲，全班反應。",main:true},
+   {t:"結尾",d:"你的感受，呼應開頭的嚴肅。",ending:true}]},
+ {id:"q2",tier:1,type:"抒情",title:"一件旅行時的紀念品",writeXp:60,focus:"五感描寫",
+  hint:"寫一件紀念品的故事：它長什麼樣、怎麼遇見它、現在看到它想起什麼。",
+  options:[
+   {t:"紀念品是什麼、長什麼樣",ok:true},
+   {t:"在哪裡、怎麼遇見它",ok:true},
+   {t:"買下它當時的情景",ok:true},
+   {t:"現在看到它的感受",ok:true},
+   {t:"羨慕別人的紀念品比較好",ok:false},
+   {t:"列出旅行買的所有東西",ok:false},
+   {t:"介紹那個國家的歷史",ok:false}],
+  segs:[
+   {t:"開頭破題",d:"直接描寫這件紀念品的樣子，一眼看見它。"},
+   {t:"背景",d:"這趟旅行是去哪、跟誰？"},
+   {t:"主場景",d:"『遇見它、買下它』的那一刻，用五感寫細。",main:true},
+   {t:"結尾昇華",d:"它替你留住了什麼回憶？連結到人或情感。",ending:true}]},
+ {id:"q3",tier:2,type:"想像",title:"未來世界",writeXp:75,focus:"照重點寫、不偏題",
+  hint:"想像作文！家庭、學校、社區的改變都要寫到，還要有高科技產品。",
+  options:[
+   {t:"未來的家庭有什麼改變",ok:true},
+   {t:"未來的學校有什麼改變",ok:true},
+   {t:"未來的社區有什麼改變",ok:true},
+   {t:"一個高科技產品怎麼用",ok:true},
+   {t:"整段罵現在地球污染有多糟",ok:false},
+   {t:"照抄題目說明的太空船背景",ok:false},
+   {t:"寫一堆發明但每個只講一句",ok:false}],
+  segs:[
+   {t:"開頭",d:"用兩三句帶出未來世界，讓『我』當主角。"},
+   {t:"家庭",d:"未來的家有什麼神奇的東西？挑一個寫成畫面。"},
+   {t:"學校＋社區",d:"上學方式、社區生活怎麼改變？",main:true},
+   {t:"結尾反思",d:"科技這麼方便，有沒有什麼讓你想念或擔心？",ending:true}]},
+ {id:"q4",tier:2,type:"擬人",title:"流浪狗的心聲",writeXp:75,focus:"串故事＋加情感",
+  hint:"用第一人稱當一隻流浪狗，把遭遇串成完整故事，加入情感。",
+  options:[
+   {t:"從前被照顧的幸福日子",ok:true},
+   {t:"怎麼變成流浪狗的",ok:true},
+   {t:"流浪時遇到的困難",ok:true},
+   {t:"心裡的期盼與感受",ok:true},
+   {t:"用旁觀者角度講狗好可憐",ok:false},
+   {t:"介紹狗的品種和特徵百科",ok:false},
+   {t:"寫成罵人類的口號",ok:false}],
+  segs:[
+   {t:"開頭",d:"我現在是流浪狗，但從前不是——立下反差。"},
+   {t:"轉折",d:"怎麼被拋棄、變成流浪狗的？"},
+   {t:"主場景",d:"最苦的一幕（例如冬夜翻垃圾桶），寫冷、餓、怕。",main:true},
+   {t:"結尾",d:"渴望重新被愛，比寫報復更打動人。",ending:true}]},
+ {id:"q5",tier:2,type:"記敘",title:"假期中最難忘的一件事",writeXp:75,focus:"單點放大",
+  hint:"寫一次真實經歷，有頭有尾，最好有一個意外或高潮讓故事有張力。",
+  options:[
+   {t:"這件事是什麼、發生在哪",ok:true},
+   {t:"事情的經過",ok:true},
+   {t:"一個高潮或意外",ok:true},
+   {t:"事後的感想",ok:true},
+   {t:"把整個假期每天都流水帳寫一遍",ok:false},
+   {t:"寫成旅遊景點介紹",ok:false},
+   {t:"不斷說『假期真好』卻沒有事件",ok:false}],
+  segs:[
+   {t:"開頭",d:"用一個有畫面的瞬間或懸念切入，別平淡開場。"},
+   {t:"過程",d:"事情怎麼發展？（別平均寫，帶到主場景）"},
+   {t:"主場景／高潮",d:"最難忘的那一刻放大，或寫一個意外轉折。",main:true},
+   {t:"結尾",d:"這件事帶給你什麼感受或收穫。",ending:true}]},
+ {id:"q6",tier:3,type:"說明",title:"活用時間",writeXp:90,focus:"具體作法＋收穫",
+  hint:"寫你怎麼善用零碎時間，以及善用後帶來的收穫。",
+  options:[
+   {t:"哪些是零碎時間",ok:true},
+   {t:"你怎麼利用它（具體作法）",ok:true},
+   {t:"善用後的收穫",ok:true},
+   {t:"對你生活的正面影響",ok:true},
+   {t:"抱怨功課太多沒時間",ok:false},
+   {t:"寫整天的固定行程（上學、補習）",ok:false},
+   {t:"只說時間很重要卻沒作法",ok:false}],
+  segs:[
+   {t:"開頭",d:"點出生活中有很多零碎時間，很可貴。"},
+   {t:"作法一",d:"某段零碎時間你怎麼運用？寫具體。"},
+   {t:"作法二",d:"另一段時間的運用，或更進一步的方法。",main:true},
+   {t:"結尾",d:"善用時間對你的正面影響。",ending:true}]},
+
+// ===== 以下 15 題為 CWT 全民中檢初等歷屆真題（2013–2024），引導語照官方「引導式作文」格式改寫 =====
+ {id:"c_hobby",tier:1,type:"說明",title:"我的興趣",writeXp:60,focus:"介紹一件事＋具體經驗",
+  hint:"（2021 年真題）你平常最喜歡做什麼？是打球、畫畫，還是看小說？請寫出你的興趣是什麼、怎麼開始的，還有它帶給你什麼。",
+  options:[
+   {t:"我的興趣是什麼（說清楚是哪一件事）",ok:true},
+   {t:"怎麼開始喜歡上它的",ok:true},
+   {t:"做這件事時最投入的一次經驗",ok:true},
+   {t:"這個興趣帶給我什麼",ok:true},
+   {t:"把喜歡的事全部列出來，每個寫一點",ok:false},
+   {t:"抱怨爸媽不讓我做這件事",ok:false},
+   {t:"介紹這個領域的世界紀錄和名人",ok:false}],
+  segs:[
+   {t:"開頭",d:"直接說出你的興趣，用一句話讓人好奇。"},
+   {t:"怎麼開始",d:"第一次接觸是什麼時候？誰帶你入門的？"},
+   {t:"主場景",d:"挑一次做這件事最投入的畫面：動作、聲音、心情都寫進去。",main:true},
+   {t:"結尾",d:"這個興趣帶給你什麼改變或收穫，呼應開頭。",ending:true}]},
+
+ {id:"c_food",tier:1,type:"抒情",title:"我最喜歡的食物",writeXp:60,focus:"五感描寫",
+  hint:"（2023 年真題）你最喜歡吃什麼？是熱騰騰的滷肉飯，還是冰涼的西瓜？請寫出它的樣子和味道，還有你和這道食物之間的故事。",
+  options:[
+   {t:"這道食物的外觀、香味、口感",ok:true},
+   {t:"在什麼場合、跟誰一起吃",ok:true},
+   {t:"一次和這道食物有關的難忘經驗",ok:true},
+   {t:"為什麼它是你最喜歡的",ok:true},
+   {t:"把菜單上十道菜都介紹一遍",ok:false},
+   {t:"抄食譜，寫成做菜步驟說明書",ok:false},
+   {t:"批評別人喜歡的食物很難吃",ok:false}],
+  segs:[
+   {t:"開頭",d:"用一個畫面或一種味道開場，讓人肚子餓。"},
+   {t:"它長什麼樣",d:"顏色、香味、咬下去的聲音和口感，五感全開。"},
+   {t:"主場景",d:"一次吃這道食物最難忘的場面：跟誰、發生什麼事。",main:true},
+   {t:"結尾",d:"它為什麼對你特別，寫出感受。",ending:true}]},
+
+ {id:"c_leisure",tier:1,type:"說明",title:"我最喜歡的休閒活動",writeXp:60,focus:"說明清楚＋寫出感受",
+  hint:"（2022 年真題）放假的時候你最喜歡做什麼？是騎腳踏車、玩桌遊，還是去圖書館？請寫出這個活動怎麼進行、你為什麼喜歡，以及它帶給你的感覺。",
+  options:[
+   {t:"這個休閒活動是什麼、怎麼進行",ok:true},
+   {t:"通常在什麼時候、跟誰一起做",ok:true},
+   {t:"一次玩得最盡興的過程",ok:true},
+   {t:"它為什麼讓你放鬆或開心",ok:true},
+   {t:"寫成一整天的流水帳行程表",ok:false},
+   {t:"抱怨功課太多沒時間玩",ok:false},
+   {t:"介紹這個活動的規則佔滿全文",ok:false}],
+  segs:[
+   {t:"開頭",d:"說出你的休閒活動，點出它對你的意義。"},
+   {t:"怎麼玩",d:"簡單說明怎麼進行、需要什麼，兩三句就好。"},
+   {t:"主場景",d:"挑一次玩得最盡興的，把畫面和心情寫細。",main:true},
+   {t:"結尾",d:"它帶給你的感覺，跟開頭呼應。",ending:true}]},
+
+ {id:"c_toy",tier:1,type:"抒情",title:"一件心愛的玩具",writeXp:60,focus:"物品描寫＋回憶",
+  hint:"（2015 年真題）在你的房間裡，有沒有一件捨不得丟的玩具？請寫出它長什麼樣子、怎麼來的，還有它為什麼對你這麼重要。",
+  options:[
+   {t:"這件玩具長什麼樣（顏色、大小、摸起來的感覺）",ok:true},
+   {t:"它是怎麼來到你身邊的",ok:true},
+   {t:"一段和它有關的回憶",ok:true},
+   {t:"它對你的意義",ok:true},
+   {t:"把玩具箱裡所有玩具都介紹一次",ok:false},
+   {t:"寫它多貴、比同學的更高級",ok:false},
+   {t:"抱怨爸媽不再買新玩具給你",ok:false}],
+  segs:[
+   {t:"開頭",d:"用一個畫面帶出這件玩具，例如你伸手摸到它的那一刻。"},
+   {t:"它的樣子",d:"外觀、大小、摸起來的感覺，用五感寫。"},
+   {t:"主場景",d:"一段跟它有關、最難忘的回憶，寫成慢動作。",main:true},
+   {t:"結尾",d:"為什麼捨不得，寫出你的感受。",ending:true}]},
+
+ {id:"c_scene",tier:2,type:"記敘",title:"難忘的一幕",writeXp:75,focus:"單一畫面放大",
+  hint:"（2024 年真題）回憶裡總有某些畫面讓人忘不掉：可能是旅途中的風景、幫助別人後得到的微笑，或是老師的一句肯定。請寫出那個具體的畫面和故事，還有它為什麼讓你印象深刻。",
+  options:[
+   {t:"那一幕發生的時間、地點、有誰在",ok:true},
+   {t:"事情的來龍去脈",ok:true},
+   {t:"那個畫面的細節（表情、動作、聲音）",ok:true},
+   {t:"為什麼這一幕讓你印象深刻",ok:true},
+   {t:"一口氣寫好幾幕，每幕只寫一兩句",ok:false},
+   {t:"只說「很難忘」卻沒寫發生什麼事",ok:false},
+   {t:"大篇幅介紹當天的天氣和行程",ok:false}],
+  segs:[
+   {t:"開頭",d:"先讓人看見那個畫面的一角，製造好奇。"},
+   {t:"事情怎麼發生",d:"把來龍去脈交代清楚。"},
+   {t:"主場景",d:"那一幕的慢動作：表情、動作、聲音，還有你當下的心跳。",main:true},
+   {t:"結尾",d:"為什麼忘不掉，寫出你的感受。",ending:true}]},
+
+ {id:"c_corner",tier:2,type:"抒情",title:"校園的一角",writeXp:75,focus:"定點描寫＋情感",
+  hint:"（2019 年真題）學校裡有沒有一個角落，是你特別喜歡待著的？可能是操場邊的樹下、圖書館的窗邊，或是樓梯轉角。請寫出那裡的樣子，還有你在那裡的心情和故事。",
+  options:[
+   {t:"這個角落在哪裡、長什麼樣子",ok:true},
+   {t:"那裡的光線、聲音、氣味",ok:true},
+   {t:"你在那裡做過什麼、發生過什麼事",ok:true},
+   {t:"這個角落對你的意義",ok:true},
+   {t:"從校門口一路介紹到福利社",ok:false},
+   {t:"寫學校的歷史和有幾個班級",ok:false},
+   {t:"抱怨學校的設備很舊",ok:false}],
+  segs:[
+   {t:"開頭",d:"帶讀者走到那個角落，先讓人看見它。"},
+   {t:"它的樣子",d:"光線、聲音、氣味、周圍有什麼，用五感寫。"},
+   {t:"主場景",d:"你在那裡最難忘的一次：做了什麼、心裡想什麼。",main:true},
+   {t:"結尾",d:"它為什麼是「你的」角落。",ending:true}]},
+
+ {id:"c_thanks",tier:2,type:"抒情",title:"我最感恩的人",writeXp:75,focus:"用事件證明情感",
+  hint:"（2015 年真題）有沒有一個人，讓你打從心裡想說謝謝？可能是家人、老師，也可能是一位陌生人。請寫出這個人是誰、他為你做了什麼，還有你想對他說的話。",
+  options:[
+   {t:"這個人是誰、跟你的關係",ok:true},
+   {t:"他為你做過的一件具體的事",ok:true},
+   {t:"那件事當下的畫面和你的心情",ok:true},
+   {t:"你想對他說的話",ok:true},
+   {t:"只寫「他很好、很偉大」，沒有具體事件",ok:false},
+   {t:"把家裡每個人都感謝一遍",ok:false},
+   {t:"寫成抱怨自己很辛苦的信",ok:false}],
+  segs:[
+   {t:"開頭",d:"點出這個人，讓人想知道他做了什麼。"},
+   {t:"平常的他",d:"他平常是什麼樣子，為後面那件事鋪路。"},
+   {t:"主場景",d:"那一件讓你最感動的事，寫成慢動作。",main:true},
+   {t:"結尾",d:"想對他說的話，呼應開頭。",ending:true}]},
+
+ {id:"c_oops",tier:2,type:"記敘",title:"一次不小心",writeXp:75,focus:"意外事件的張力",
+  hint:"（2014 年真題）人都會出小差錯。有的不小心讓人笑到肚子痛，有的讓人後悔好久，也有的反而變成好事。請寫出你最值得記錄的「一次不小心」。",
+  options:[
+   {t:"那次不小心是怎麼發生的",ok:true},
+   {t:"當下你的反應和心情",ok:true},
+   {t:"後來發生了什麼、怎麼收場",ok:true},
+   {t:"這件事讓你學到或想到什麼",ok:true},
+   {t:"把好幾次糗事全部寫進來",ok:false},
+   {t:"寫別人的糗事，自己只是旁觀",ok:false},
+   {t:"一直說「我好笨」卻沒寫發生什麼事",ok:false}],
+  segs:[
+   {t:"開頭",d:"先丟出那個「糟了」的瞬間，抓住讀者。"},
+   {t:"怎麼發生的",d:"把前因交代清楚。"},
+   {t:"主場景",d:"出事的那一刻：動作、聲音、心跳、周圍的反應。",main:true},
+   {t:"結尾",d:"後來怎麼樣，你想到什麼。",ending:true}]},
+
+ {id:"c_song",tier:2,type:"抒情",title:"我最喜歡的一首歌",writeXp:75,focus:"聲音勾出回憶",
+  hint:"（2020 年真題）有沒有一首歌，你一聽到就會想起某個人或某件事？請寫出這首歌是什麼、你在什麼時候聽到它，還有它為什麼對你特別。",
+  options:[
+   {t:"這首歌是什麼、大概在唱什麼",ok:true},
+   {t:"印象最深的一次聽到它的情境",ok:true},
+   {t:"聽的時候心裡的感覺",ok:true},
+   {t:"它為什麼是你最喜歡的",ok:true},
+   {t:"把整首歌詞抄下來當作內容",ok:false},
+   {t:"介紹歌手的生平和得過幾座獎",ok:false},
+   {t:"列出播放清單裡的十首歌",ok:false}],
+  segs:[
+   {t:"開頭",d:"用一句歌詞或一段旋律的感覺開場。"},
+   {t:"這首歌",d:"簡單說它在唱什麼、你什麼時候聽到的。"},
+   {t:"主場景",d:"最難忘的那一次聽歌：在哪裡、跟誰、心裡想什麼。",main:true},
+   {t:"結尾",d:"它為什麼對你特別。",ending:true}]},
+
+ {id:"c_idol",tier:2,type:"說明",title:"我心目中的偶像",writeXp:75,focus:"用事例證明特質",
+  hint:"（2013 年真題）你最崇拜誰？可能是運動員、歌手、書裡的人物，也可能是身邊的家人。請寫出這個人是誰、他哪一點讓你佩服，還有你想向他學習什麼。",
+  options:[
+   {t:"你的偶像是誰、他做什麼的",ok:true},
+   {t:"他身上最讓你佩服的一個特質",ok:true},
+   {t:"一件能看出這個特質的事",ok:true},
+   {t:"你想向他學什麼、打算怎麼做",ok:true},
+   {t:"抄他的簡介：出生年月日、得過幾個獎",ok:false},
+   {t:"一次列出五個偶像，每個寫兩句",ok:false},
+   {t:"寫成「我也想紅」的心願清單",ok:false}],
+  segs:[
+   {t:"開頭",d:"說出他是誰，直接點出你佩服的那一點。"},
+   {t:"他是什麼樣的人",d:"簡單介紹就好，別變成資料表。"},
+   {t:"主場景",d:"一件最能看出他厲害的事，寫具體、寫細。",main:true},
+   {t:"結尾",d:"你想學他什麼、打算怎麼做。",ending:true}]},
+
+ {id:"c_happy",tier:3,type:"抒情",title:"最幸福的事",writeXp:90,focus:"抽象感受寫成情景",
+  hint:"（2023 年真題）什麼事讓你覺得最幸福？是悠閒午後的一頓點心？是考了第一名？還是全家一起出去玩？請寫出那是怎麼樣的情景、你覺得幸福的原因，還有你的感受。",
+  options:[
+   {t:"你認為最幸福的是哪一件事",ok:true},
+   {t:"那件事發生時的情景（在哪裡、有誰、在做什麼）",ok:true},
+   {t:"你覺得幸福的原因",ok:true},
+   {t:"當下的感受或後來的想法",ok:true},
+   {t:"列出十件幸福的事，每件一句話",ok:false},
+   {t:"寫「有錢最幸福」卻沒有任何情景",ok:false},
+   {t:"一直比較別人比自己幸福",ok:false}],
+  segs:[
+   {t:"開頭",d:"用一個畫面帶出你的答案，不要先講道理。"},
+   {t:"那是什麼樣的事",d:"把時間、地點、有誰交代清楚。"},
+   {t:"主場景",d:"最幸福的那一刻：看到什麼、聽到什麼、心裡怎麼想。",main:true},
+   {t:"結尾",d:"為什麼這件事讓你覺得幸福。",ending:true}]},
+
+ {id:"c_view",tier:3,type:"抒情",title:"令人難忘的一道風景",writeXp:90,focus:"把風景寫成畫",
+  hint:"（2023 年真題）你看過最難忘的風景是什麼？可能在旅途中、在回家的路上，也可能就在窗外。請寫出那道風景的樣子，還有你當時的心情和它為什麼難忘。",
+  options:[
+   {t:"這道風景在哪裡、什麼時候看到的",ok:true},
+   {t:"風景的細節（顏色、光線、聲音、風的感覺）",ok:true},
+   {t:"你當下的心情",ok:true},
+   {t:"它為什麼讓你難忘",ok:true},
+   {t:"寫成旅遊行程：幾點出發、吃了什麼",ok:false},
+   {t:"抄風景區的介紹和門票資訊",ok:false},
+   {t:"只寫「很漂亮、很壯觀」，沒有任何細節",ok:false}],
+  segs:[
+   {t:"開頭",d:"先給一個讓人想看下去的畫面。"},
+   {t:"怎麼遇見的",d:"什麼時候、為什麼會在那裡。"},
+   {t:"主場景",d:"把那道風景寫成一幅畫：顏色、光線、聲音、風吹過的感覺。",main:true},
+   {t:"結尾",d:"它為什麼難忘，寫出心情。",ending:true}]},
+
+ {id:"c_team",tier:3,type:"說明",title:"合作的重要",writeXp:90,focus:"道理＋親身例子",
+  hint:"（2016 年真題）一個人做不到的事，一群人可能做得到。請說說為什麼合作很重要，舉一個你親身經歷的例子，再說說你的想法。",
+  options:[
+   {t:"你認為合作為什麼重要",ok:true},
+   {t:"一次你親身經歷的合作經驗",ok:true},
+   {t:"那次合作遇到的困難和怎麼解決",ok:true},
+   {t:"從這件事得到的體會",ok:true},
+   {t:"從頭到尾只講道理，一個例子也沒有",ok:false},
+   {t:"抄名言佳句湊滿篇幅",ok:false},
+   {t:"抱怨組員都不做事，變成告狀文",ok:false}],
+  segs:[
+   {t:"開頭",d:"用一句話或一個情境點出合作的重要。"},
+   {t:"我的經驗",d:"那一次是什麼事、有誰參加。"},
+   {t:"主場景",d:"最關鍵的那一段：遇到什麼困難、大家怎麼一起解決。",main:true},
+   {t:"結尾",d:"你的體會，回到「為什麼重要」。",ending:true}]},
+
+ {id:"c_sun",tier:3,type:"擬人",title:"想對太陽說的話",writeXp:90,focus:"對著對象說話",
+  hint:"（2014 年真題）太陽天天掛在天上，有時溫暖地陪著我們，有時毒辣地烤著我們，有時又害羞地躲起來。你有什麼話想對它說？請先說說太陽在生活中扮演的角色，再說出你的想法、感受和建議。",
+  options:[
+   {t:"太陽在我們生活中扮演什麼角色",ok:true},
+   {t:"太陽帶來的好處和困擾（各舉例子）",ok:true},
+   {t:"一次你對太陽印象最深的經驗",ok:true},
+   {t:"你想對太陽說的話（想法、感受或建議）",ok:true},
+   {t:"抄太陽的科學資料：直徑幾公里、離地球多遠",ok:false},
+   {t:"寫成天氣預報，每天氣溫幾度",ok:false},
+   {t:"只喊「太陽你好棒」，沒有任何具體內容",ok:false}],
+  segs:[
+   {t:"開頭",d:"直接對太陽說話，像在跟一個老朋友聊天。"},
+   {t:"你的角色",d:"說說太陽在我們生活中做了什麼。"},
+   {t:"主場景",d:"一次你和太陽印象最深的經驗，寫成畫面（熱、光、汗、影子）。",main:true},
+   {t:"結尾",d:"說出你真正想對它說的話。",ending:true}]},
+
+ {id:"c_miss",tier:3,type:"抒情",title:"牽掛",writeXp:90,focus:"抽象情感寫成畫面",
+  hint:"（2020 年真題）心裡放不下一個人、一件事，就是牽掛。可能是遠方的家人、生病的寵物，也可能是還沒做完的約定。請寫出你牽掛的是什麼，還有這份牽掛的樣子。",
+  options:[
+   {t:"你牽掛的是誰或什麼",ok:true},
+   {t:"為什麼會牽掛（事情的前因）",ok:true},
+   {t:"牽掛的時候你會做什麼、想什麼",ok:true},
+   {t:"這份牽掛帶給你的感受",ok:true},
+   {t:"從頭到尾解釋「牽掛」這個詞的意思",ok:false},
+   {t:"同時寫五件牽掛的事，每件兩句",ok:false},
+   {t:"只寫「我很想他」，沒有任何具體畫面",ok:false}],
+  segs:[
+   {t:"開頭",d:"用一個小動作或畫面帶出這份牽掛，例如你又看了一次手機。"},
+   {t:"為什麼牽掛",d:"把事情的前因交代清楚。"},
+   {t:"主場景",d:"最放不下的那一刻：你在做什麼、心裡想什麼、身邊安靜還是吵。",main:true},
+   {t:"結尾",d:"這份牽掛讓你明白了什麼。",ending:true}]}
+];
+
+const CHECKS=[
+ "有沒有切題？必寫的重點都寫到了？",
+ "有沒有聚焦一個主要場景，而不是泛寫？",
+ "最重要那一段，有沒有用五感寫細？",
+ "結尾有沒有寫出自己的感受？有沒有呼應開頭？",
+ "字數夠嗎？（目標 500 字左右）",
+ "錯別字檢查：的／得／地、在／再、已／己",
+ "長句子有沒有適當斷句，不要一路逗號到底？"];
+const LADDER=[
+ {lv:"6級",d:"破題描寫、段落分明、五感細膩、結尾昇華，把一個場景寫到身歷其境。",c:"#2e9e6b"},
+ {lv:"5級",d:"聚焦單一事件、有具體細節與感受、首尾呼應。（很棒的目標）",c:"#c07d1a"},
+ {lv:"4級",d:"切題、結構完整、有基本感受。（合格線）",c:"#3f74c0"},
+ {lv:"3級",d:"有切題但泛寫、未聚焦，或篇幅太短。",c:"#8a7a55"},
+ {lv:"2級以下",d:"離題、篇幅過少、取材狹窄。",c:"#a06048"}];
+const SKILLS=[
+ {id:"s1",icon:"🎯",bg:"#e7f0fb",name:"立意取材（聚焦）",max:5,desc:"切題、選對材料、聚焦一件事"},
+ {id:"s2",icon:"🏗️",bg:"#fbe9e2",name:"結構組織",max:5,desc:"開頭結尾、段落分明、前後連貫"},
+ {id:"s3",icon:"🎨",bg:"#efe7fb",name:"遣詞造句（描寫）",max:5,desc:"五感描寫、比喻、句子有長有短"},
+ {id:"s4",icon:"🔍",bg:"#e6f4ec",name:"錯字與格式",max:5,desc:"的得地不混用、標點正確、字數足"}];
+const BADGES=[
+ {id:"b_plan1",em:"🧭",n:"軍師出手",d:"完成第一份作戰計畫"},
+ {id:"b_sharp",em:"🦉",n:"審題高手",d:"審題挑戰全對零失誤"},
+ {id:"b_rich",em:"✨",n:"文思泉湧",d:"一份計畫拿到三星"},
+ {id:"b_first",em:"🌱",n:"啟程",d:"謄寫完第一篇"},
+ {id:"b_three",em:"🔥",n:"漸入佳境",d:"完成三篇"},
+ {id:"b_all",em:"👑",n:"全數通關",d:"完成全部任務"},
+ {id:"b_paint",em:"🎨",n:"畫面魔法師",d:"描寫技能點滿"},
+ {id:"b_lv3",em:"⭐",n:"三星寫手",d:"升到等級 3"},
+ {id:"b_mvp",em:"🏆",n:"中檢挑戰者",d:"升到等級 6"},
+ {id:"b_ten",em:"📚",n:"十篇達人",d:"完成十篇作文"},
+ {id:"b_grow",em:"💪",n:"越挫越勇",d:"重做一題，分數超越上次"},
+ {id:"b_five",em:"🎭",n:"五體通關",d:"五種文體各完成一篇"}];
+
+const KEY="writingQuestSave_v6";
+const OLD_KEYS=["writingQuestSave_v5","writingQuestSave_v4","writingQuestSave_v3"];   // 舊存檔會自動搬過來，不會清掉進度
+let S=load();
+function blank(){return{name:"",xp:0,lvl:1,plans:{},done:{},skills:{s1:0,s2:0,s3:0,s4:0},badges:{},checks:{},draft:null}}
+function load(){
+  try{
+    const r=localStorage.getItem(KEY);
+    if(r)return Object.assign(blank(),JSON.parse(r));
+    for(const k of OLD_KEYS){                    // 舊版遷移：技能與進度照搬，只換掉檢查表的記法
+      const o=localStorage.getItem(k);if(!o)continue;
+      const d=Object.assign(blank(),JSON.parse(o));
+      d.checks=d.checks||{};d.name=d.name||"";delete d.checkedOnce;delete d.checkCount;d.draft=null;
+      localStorage.setItem(KEY,JSON.stringify(d));return d;
+    }
+    return blank();
+  }catch(e){return blank()}
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+// 孩子打的字一律經過這裡才進 HTML，避免打到 < > & 就破版
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+const MAX_LV=RANKS.length;
+function levelFromXp(xp){let l=1;for(let i=1;i<LVL_XP.length;i++){if(xp>=LVL_XP[i])l=i+1}return Math.min(l,MAX_LV)}
+function rankName(lv){const r=RANKS.find(r=>r.lv===lv);return r?r.name:RANKS[RANKS.length-1].name}
+
+// ====== 內容評分引擎 ======
+// 強五感＝具體的感覺；弱五感（看、聽…）幾乎每句都有，要用到兩個不同的才算數
+const SENSE_STRONG=["冷","熱","涼","燙","暖","香","臭","甜","酸","鹹","辣","苦","痛","癢","麻","軟","硬","滑","粗","刺","亮","暗","悶","濕","乾","重"];
+const SENSE_WEAK=["看","聽","聞","摸","碰","望","瞧","嚐","嗅","觸"];
+const SIMILE_STRONG=["彷彿","宛如","猶如","如同"];
+const SIMILE_PAT=/[像似][^，。！？；、\s]{1,12}?(一樣|似的|那樣|一般)/;   // 真正的「像…一樣」句型
+const NOT_SIMILE=["好像","想像","影像","圖像","錄像","偶像","不像","像這樣","像那樣"];  // 這些不是比喻
+const SOUND=["哈哈","咕嚕","砰","嘩","嗡","汪","喵","唰","叮","咚","呼呼","嘰","啪","滴答","咻","轟","嘟","噗","呼嚕","喳喳"];
+const DIALOG_PAT=/[「『][^」』]{2,}[」』]/;   // 引號裡要真的有一句話（至少兩個字）
+function hasSimile(t){
+  if(SIMILE_STRONG.some(w=>t.includes(w)))return true;
+  if(SIMILE_PAT.test(t))return true;
+  let x=t;NOT_SIMILE.forEach(w=>{x=x.split(w).join("§")});   // 挖掉非比喻的「像」
+  return /像[^，。！？；、\s]{2,}/.test(x);
+}
+// 灌水處理：連續重複的字或詞只算兩次（「啊啊啊啊啊」不能當字數）
+function squash(s){return s.replace(/(.)\1{2,}/g,"$1$1").replace(/(.{2,6}?)\1{2,}/g,"$1$1")}
+function analyze(text){
+  const t=squash((text||"").trim());
+  const len=[...t].length;
+  let base=0;
+  if(len>=6)base+=6;
+  if(len>=15)base+=6;
+  if(len>=30)base+=8;
+  if(len>=50)base+=8;   // 主場景鼓勵寫長
+  if(len<12)return {len,xp:base,tags:[]};   // 太短就不給技巧加分，避免只打幾個關鍵字騙分
+  const hit=[];
+  const strong=SENSE_STRONG.filter(w=>t.includes(w)).length;
+  const weak=new Set(SENSE_WEAK.filter(w=>t.includes(w))).size;
+  if(strong>=1||weak>=2)hit.push(["五感",6]);
+  if(DIALOG_PAT.test(t))hit.push(["對話",6]);
+  if(hasSimile(t))hit.push(["比喻",6]);
+  if(SOUND.some(w=>t.includes(w)))hit.push(["狀聲",5]);
+  // 技巧要有篇幅撐著才算數：字數越多，能同時計分的技巧才越多（擋掉堆關鍵字的短句）
+  const cap=len>=40?4:len>=28?3:len>=18?2:1;
+  const used=hit.slice(0,cap);
+  const bonus=used.reduce((a,x)=>a+x[1],0);
+  return {len,xp:base+bonus,tags:used.map(x=>x[0])};
+}
+
+// ====== 開場：先取一個練習生的名字 ======
+let NAMEGATE=false;
+function openNameGate(isRename){
+  NAMEGATE=!isRename;   // 第一次一定要取名才能出發；改名可以取消
+  const s=document.getElementById("sheetBody");
+  const hint=isRename?"想換個名字隨時可以改，進度不會不見。"
+    :(S.xp>0?"先幫自己取一個練習生的名字，之後每次打開都會看到你。"
+            :"在出發之前，先幫自己取一個練習生的名字吧！");
+  s.innerHTML=`<h3>${isRename?"✏️ 改名字":"🖋️ 歡迎來到作文冒險"}</h3>
+    <div class="fieldhint">${hint}</div>
+    <div class="fieldlabel" style="margin-top:10px">我的練習生名字</div>
+    <input class="txt" id="nameInput" maxlength="8" placeholder="例如：小宇" value="${esc(S.name||"")}" autocomplete="off">
+    <div class="fieldhint" style="margin-top:6px">最多 8 個字，綽號也可以。</div>
+    <div class="navrow">${isRename?'<button class="btn ghost" id="nameCancel">取消</button>':""}
+      <button class="btn gold" id="nameGo">${isRename?"改好了":"開始闖關 →"}</button></div>`;
+  const inp=s.querySelector("#nameInput"),go=s.querySelector("#nameGo");
+  const sync=()=>{go.disabled=!inp.value.trim()};
+  inp.oninput=sync;sync();
+  inp.onkeydown=e=>{if(e.key==="Enter"&&inp.value.trim())go.click();};
+  go.onclick=()=>{
+    const v=inp.value.trim().slice(0,8);if(!v)return;
+    const isNew=!S.name;
+    S.name=v;save();NAMEGATE=false;closeModal();renderAll();
+    toast(isNew?`${v}，出發吧！第一關在任務板等你 ⚔️`:`名字改好了，${v} ✏️`);
+  };
+  if(isRename)s.querySelector("#nameCancel").onclick=()=>{NAMEGATE=false;closeModal();};
+  document.getElementById("modal").classList.add("on");
+  setTimeout(()=>inp.focus(),120);
+}
+function renderHero(){
+  const lv=S.lvl;
+  document.getElementById("heroName").textContent=S.name||"—";
+  document.getElementById("lvlNum").textContent=lv;
+  document.getElementById("rankName").textContent=rankName(lv);
+  const curBase=LVL_XP[lv-1]??0,nextBase=LVL_XP[lv]??LVL_XP[LVL_XP.length-1];
+  const span=Math.max(1,nextBase-curBase),into=Math.min(span,S.xp-curBase);
+  const pct=lv>=MAX_LV?100:Math.round(into/span*100);
+  document.getElementById("xpFill").style.width=pct+"%";
+  document.getElementById("xpNow").textContent=S.xp+" XP";
+  document.getElementById("xpNext").textContent=lv>=MAX_LV?"已達最高等級 🎉":("下一級 "+nextBase+" XP");
+}
+function renderQuests(){
+  const box=document.getElementById("questList");box.innerHTML="";
+  TIERS.forEach(tr=>{
+    const list=QUESTS.filter(q=>(q.tier||1)===tr.n);
+    if(!list.length)return;
+    const dn=list.filter(q=>S.done[q.id]).length;
+    const h=document.createElement("div");h.className="tierhead";
+    h.innerHTML=`<b>${tr.icon} ${tr.name}</b><span class="td">${tr.d}</span>
+      <span class="tc">${dn}/${list.length} 篇</span>`;
+    box.appendChild(h);
+    list.forEach(q=>{
+    const planned=!!S.plans[q.id], done=!!S.done[q.id];
+    const drafting=!planned&&!!S.draft&&S.draft.qid===q.id&&(S.draft.segTexts||[]).some(t=>(t||"").trim());
+    const el=document.createElement("div");el.className="quest"+(done?" done":"");
+    const earned=planned?S.plans[q.id].xp:0;
+    el.innerHTML=`
+      <div class="qtop"><span class="qtype t-${q.type}">${q.type}</span>
+        <span class="qtitle">${q.title}</span>
+        <span class="qxp">計畫${planned?'✓'+earned:'?'} · 謄寫+${q.writeXp}</span></div>
+      <div class="qhint">${q.hint}</div>
+      <div class="qprog"><div class="qstep ${planned?'on':''}"></div><div class="qstep ${done?'on':''}"></div></div>
+      <div class="qbtns"></div>`;
+    const btns=el.querySelector(".qbtns");
+    const pb=document.createElement("button");
+    if(planned){pb.className="btn ghost";pb.textContent="✓ 看我的藍圖";}
+    else{pb.className="btn gold";pb.textContent=drafting?"① 繼續做計畫（打到一半）":"① 做計畫（動手寫）";}
+    pb.onclick=()=>openPlan(q);btns.appendChild(pb);
+    if(planned){
+      if(done){const b=document.createElement("span");b.className="badge-done";b.innerHTML="✓ 已完成";btns.appendChild(b);
+        if(!S.checks[q.id]){const cb=document.createElement("button");cb.className="btn ghost";
+          cb.textContent="③ 自我檢查 +20";cb.onclick=()=>openCheck(q);btns.appendChild(cb);}}
+      else{const wb=document.createElement("button");wb.className="btn jade";
+        wb.textContent="② 謄寫完成 +"+q.writeXp;wb.onclick=()=>finishWrite(q);btns.appendChild(wb);}
+    }
+    box.appendChild(el);
+    });
+  });
+}
+
+// ====== 規劃關卡 ======
+let PS=null,draftTimer;
+// 審題選項每次重新洗牌，避免「正解永遠排前面」被背下來
+function shuffledIdx(n){const a=[...Array(n).keys()];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a}
+function saveDraft(){if(!PS)return;
+  S.draft={qid:PS.qid,step:PS.step,picks:PS.picks,wrongPicks:PS.wrongPicks,segTexts:PS.segTexts,optOrder:PS.optOrder};save();}
+function saveDraftSoon(){clearTimeout(draftTimer);draftTimer=setTimeout(saveDraft,400);}
+function clearDraft(){S.draft=null;save();}
+function openPlan(q){
+  if(S.plans[q.id]){showPlanReview(q);return;}
+  const d=S.draft;
+  if(d&&d.qid===q.id&&Array.isArray(d.segTexts)&&d.segTexts.length===q.segs.length){
+    PS={qid:q.id,step:Math.min(d.step||0,3),picks:d.picks||[],wrongPicks:d.wrongPicks||[],segTexts:d.segTexts,
+        optOrder:(Array.isArray(d.optOrder)&&d.optOrder.length===q.options.length)?d.optOrder:shuffledIdx(q.options.length)};
+    toast("接回你上次打到一半的內容 ✍️");
+  }else{
+    PS={qid:q.id,step:0,picks:[],wrongPicks:[],segTexts:q.segs.map(()=>""),optOrder:shuffledIdx(q.options.length)};
+  }
+  drawPlan(q);document.getElementById("modal").classList.add("on");
+}
+function cancelPlan(){
+  const typed=PS&&PS.segTexts.some(t=>(t||"").trim());
+  if(typed){saveDraft();toast("先幫你留著了，下次可以接著寫 ✍️");}else clearDraft();
+  PS=null;closeModal();renderQuests();
+}
+function drawPlan(q){
+  const p=PS,s=document.getElementById("sheetBody");
+  const steps=["審題挑戰","段落藍圖","主場景放大","結尾感受"];
+  const mainIdx=q.segs.findIndex(x=>x.main);
+  const endIdx=q.segs.findIndex(x=>x.ending);
+  let inner="";
+  if(p.step===0){
+    inner=`<div class="fieldlabel">哪些是這一題「一定要寫」的？</div>
+      <div class="fieldhint">全部挑出來，小心有偏題陷阱！挑對加分，全對還有徽章 🦉</div>
+      <div class="optlist" id="optList">
+        ${p.optOrder.map(i=>{const o=q.options[i];
+          const cls=p.picks.includes(i)?" right pick":(p.wrongPicks.includes(i)?" wrong":"");
+          return `<button class="opt${cls}" data-i="${i}"><span class="ck">✓</span><span>${o.t}</span></button>`}).join("")}
+      </div>
+      <div class="okmsg" id="ok0"></div>`;
+  }else if(p.step===1){
+    inner=`<div class="fieldhint">照順序，每段動手打一點內容。寫越具體、用越多技巧，XP 越高！</div>`+
+      q.segs.map((seg,i)=>`
+        <div class="segblue"><b>第${i+1}段 · ${seg.t}${seg.main?' ⭐':''}</b>　${seg.d}</div>
+        <textarea data-seg="${i}" rows="2" placeholder="這段我要寫…">${esc(p.segTexts[i])}</textarea>
+        <div class="livexp" data-lx="${i}" style="margin-bottom:10px">✍️ <span data-xp>0 XP</span><span class="tags"></span></div>`).join("");
+  }else if(p.step===2){
+    const seg=q.segs[mainIdx];
+    inner=`<div class="fieldlabel">⭐ 主場景：第${mainIdx+1}段 ${seg.t}</div>
+      <div class="fieldhint">${seg.d}<br>這是全文最重要的一幕！試著打長一點（30 字以上），加入五感、對話或比喻。</div>
+      <textarea data-main rows="5" placeholder="把最重要的那一幕，仔細寫出來…">${esc(p.segTexts[mainIdx])}</textarea>
+      <div class="livexp" data-lx="main">✍️ <span data-xp>0 XP</span><span class="tags"></span></div>`;
+  }else if(p.step===3){
+    const seg=q.segs[endIdx];
+    inner=`<div class="fieldlabel">結尾：${seg.t}</div>
+      <div class="fieldhint">${seg.d}<br>打出你結尾想留下的感受或想法（一兩句也可以）。</div>
+      <textarea data-ending rows="4" placeholder="我的結尾想寫…">${esc(p.segTexts[endIdx])}</textarea>
+      <div class="livexp" data-lx="ending">✍️ <span data-xp>0 XP</span><span class="tags"></span></div>`;
+  }
+  s.innerHTML=`<h3><span class="qtype t-${q.type}">${q.type}</span> ${q.title}</h3>
+    <div class="planhead"><div class="pn">${p.step+1}</div><b>${steps[p.step]}</b></div>
+    <div class="planbar">${[0,1,2,3].map(i=>`<div class="${i<=p.step?'on':''}"></div>`).join("")}</div>
+    <div class="body">${inner}</div><div class="navrow" id="planNav"></div>`;
+
+  if(p.step===0){
+    const need0=q.options.filter(o=>o.ok).length;
+    const syncOk=()=>{const ok=document.getElementById("ok0");
+      if(p.picks.length>=need0){ok.classList.add("on");
+        ok.textContent=p.wrongPicks.length===0?"全對！你抓到了所有重點 🦉":"重點都挑到了！下次先想一想再點，會拿更多分";}
+      else ok.classList.remove("on");};
+    s.querySelectorAll("#optList .opt").forEach(btn=>btn.onclick=()=>{
+      const i=+btn.dataset.i,o=q.options[i];
+      if(btn.classList.contains("right")||btn.classList.contains("wrong"))return;
+      if(o.ok){btn.classList.add("right","pick");if(!p.picks.includes(i))p.picks.push(i);}
+      else{btn.classList.add("wrong");if(!p.wrongPicks.includes(i))p.wrongPicks.push(i);toast("這個是陷阱，會偏題 ⚠️");}
+      syncOk();saveDraft();
+    });
+    syncOk();
+  }else if(p.step===1){
+    s.querySelectorAll("textarea[data-seg]").forEach(ta=>{
+      const i=+ta.dataset.seg;
+      const upd=()=>{p.segTexts[i]=ta.value;liveXp(s,`[data-lx="${i}"]`,ta.value);saveDraftSoon();};
+      ta.oninput=upd;upd();
+    });
+  }else if(p.step===2){
+    const ta=s.querySelector("textarea[data-main]");
+    const upd=()=>{p.segTexts[mainIdx]=ta.value;liveXp(s,'[data-lx="main"]',ta.value,true);saveDraftSoon();};
+    ta.oninput=upd;upd();
+  }else if(p.step===3){
+    const ta=s.querySelector("textarea[data-ending]");
+    const upd=()=>{p.segTexts[endIdx]=ta.value;liveXp(s,'[data-lx="ending"]',ta.value);saveDraftSoon();};
+    ta.oninput=upd;upd();
+  }
+
+  const nav=document.getElementById("planNav");
+  const back=document.createElement("button");back.className="btn ghost";
+  back.textContent=p.step===0?"取消":"上一步";
+  back.onclick=()=>{if(p.step===0)cancelPlan();else{p.step--;saveDraft();drawPlan(q);}};
+  nav.appendChild(back);
+  const next=document.createElement("button");next.className="btn gold";
+  next.textContent=p.step===3?"完成計畫！":"下一步 →";
+  next.onclick=()=>{if(!validStep(q))return;if(p.step<3){p.step++;saveDraft();drawPlan(q);}else finalizePlan(q);};
+  nav.appendChild(next);
+}
+function liveXp(scope,sel,text,isMain){
+  const box=scope.querySelector(sel);if(!box)return;
+  const a=analyze(text);let xp=a.xp;if(isMain)xp=Math.round(xp*1.5);
+  box.querySelector("[data-xp]").textContent="+"+xp+" XP";
+  box.querySelector(".tags").innerHTML=a.tags.map(t=>`<span class="tg">${t}</span>`).join("");
+}
+function validStep(q){
+  const p=PS;
+  if(p.step===0){
+    const need=q.options.filter(o=>o.ok).length;
+    if(p.picks.length<need){toast("還有必寫的重點沒挑到！");return false;}
+  }
+  // 主場景那段可留到第 3 步再寫細，其他段這步至少要幾個字
+  if(p.step===1&&p.segTexts.some((t,i)=>!q.segs[i].main&&[...t.trim()].length<4)){
+    toast("每段都打一點內容吧（至少幾個字）");return false;
+  }
+  const mainIdx=q.segs.findIndex(x=>x.main);
+  if(p.step===2&&[...p.segTexts[mainIdx].trim()].length<10){toast("主場景是重頭戲，多寫一點！");return false;}
+  const endIdx=q.segs.findIndex(x=>x.ending);
+  if(p.step===3&&[...p.segTexts[endIdx].trim()].length<4){toast("結尾也打一點感受吧");return false;}
+  return true;
+}
+function finalizePlan(q){
+  const p=PS;
+  const mainIdx=q.segs.findIndex(x=>x.main),endIdx=q.segs.findIndex(x=>x.ending);
+  // 計算各部分 XP
+  const wrongs=p.wrongPicks.length;
+  let mustXp=Math.max(0,p.picks.length*4+(wrongs===0?10:0)-wrongs*3);
+  let segsXp=0;p.segTexts.forEach((t,i)=>{if(!q.segs[i].main&&i!==endIdx)segsXp+=analyze(t).xp;});
+  let mainXp=Math.round(analyze(p.segTexts[mainIdx]).xp*1.5);
+  let endXp=analyze(p.segTexts[endIdx]).xp;
+  const total=mustXp+segsXp+mainXp+endXp;
+  // 重做時：XP 只給「比上次進步的部分」，避免重複刷分，但進步一定有回饋
+  const prev=S.plans[q.id];
+  const best=prev?(prev.xp||0):0;
+  const attempts=(prev?(prev.attempts||1):0)+1;
+  const gain=prev?Math.max(0,total-best):total;
+  const newBest=Math.max(best,total);
+  const keepNew=!prev||total>=best;      // 藍圖留分數比較高的那一版
+  let stars=1;if(newBest>=70)stars=2;if(newBest>=110)stars=3;
+  S.plans[q.id]={picks:keepNew?p.picks:prev.picks, wrongs:keepNew?wrongs:prev.wrongs,
+                 segTexts:keepNew?p.segTexts:prev.segTexts, xp:newBest, stars, attempts};
+  gainXp(gain);
+  const improved=!prev||total>best;
+  if(!prev){addSkill("s1",1);addSkill("s2",1);}
+  if(improved&&analyze(p.segTexts[mainIdx]).tags.length>=2)addSkill("s3",1);
+  if(!S.badges.b_plan1)S.badges.b_plan1=true;
+  if(wrongs===0)S.badges.b_sharp=true;
+  if(stars>=3)S.badges.b_rich=true;
+  if(attempts>1&&gain>0)S.badges.b_grow=true;
+  PS=null;clearDraft();
+  checkBadges();save();renderAll();
+  showResult(q,{mustXp,segsXp,mainXp,endXp,total,stars,wrongs,gain,best,attempts});
+  maybeLevelUp();
+}
+// 同一題可以重練：重新洗牌、從空白開始，分數取最高
+function redoPlan(q){
+  PS={qid:q.id,step:0,picks:[],wrongPicks:[],segTexts:q.segs.map(()=>""),optOrder:shuffledIdx(q.options.length)};
+  clearDraft();drawPlan(q);
+  toast("再挑戰一次！分數會取最高的那次 💪");
+}
+function showResult(q,r){
+  const s=document.getElementById("sheetBody");
+  let msg=r.stars>=3?"太厲害了！內容豐富又切題，這份藍圖可以寫出高分作文 🎉":
+          r.stars===2?"很棒！內容有料，動筆前再想想能不能更細一點 💪":
+          "完成了！下次每段多打一點、加入五感和對話，分數會更高 ✍️";
+  if(r.attempts>1){
+    msg=r.gain>0?`這次 ${r.total} 分，比上次的 ${r.best} 分進步了 ${r.gain} 分，太棒了 🎉`
+                :`這次 ${r.total} 分，上次是 ${r.best} 分。分數幫你留最高的那次，再想想主場景能不能更細一點 💪`;
+  }
+  s.innerHTML=`<h3>🧭 作戰計畫完成！</h3>
+    <div class="stars">${"⭐".repeat(r.stars)}${"☆".repeat(3-r.stars)}</div>
+    <div class="planReview">
+      <div class="r"><b>審題挑戰：</b>+${r.mustXp} XP ${r.wrongs===0?"（零失誤 🦉）":""}</div>
+      <div class="r"><b>段落藍圖：</b>+${r.segsXp} XP</div>
+      <div class="r"><b>主場景放大：</b>+${r.mainXp} XP</div>
+      <div class="r"><b>結尾感受：</b>+${r.endXp} XP</div>
+      <div class="r" style="border-top:1px dashed var(--line);padding-top:6px;margin-top:6px"><b>這次總分：${r.total} 分</b>${r.attempts>1?`（第 ${r.attempts} 次挑戰）`:""}</div>
+      <div class="r"><b>拿到 XP：+${r.gain}</b>${r.attempts>1&&r.gain===0?"（沒超過上次，這次不加 XP）":""}</div>
+    </div>
+    <div class="okmsg on" style="margin-top:12px">${msg}</div>
+    <div class="fieldhint" style="margin-top:10px">💡 現在照著你的藍圖去稿紙謄寫，⭐主場景那段寫最多、最細！全文目標 500 字左右。</div>
+    <div class="navrow"><button class="btn ghost" id="resCopy">📋 複製藍圖</button>
+      <button class="btn gold" id="resClose">關閉，去謄寫</button></div>`;
+  s.querySelector("#resCopy").onclick=()=>copyPlan(q);
+  s.querySelector("#resClose").onclick=closeModal;
+}
+function showPlanReview(q){
+  const pl=S.plans[q.id];const s=document.getElementById("sheetBody");
+  s.innerHTML=`<h3><span class="qtype t-${q.type}">${q.type}</span> ${q.title}</h3>
+    <div class="stars">${"⭐".repeat(pl.stars)}${"☆".repeat(3-pl.stars)}</div>
+    <div class="fieldlabel">📋 我的寫作藍圖（最高 ${pl.xp} 分${pl.attempts>1?` · 挑戰過 ${pl.attempts} 次`:""}）</div>
+    <div class="planReview">
+      ${pl.segTexts.map((sg,i)=>`<div class="r"><b>第${i+1}段 ${q.segs[i].t}${q.segs[i].main?' ⭐主場景':''}：</b>${esc(sg)||'—'}</div>`).join("")}
+    </div>
+    <div class="fieldhint" style="margin-top:10px">💡 動筆提醒：⭐那一段要寫最多、最細（30 字大綱 → 稿紙上放大成 150 字左右）。</div>
+    <div class="navrow"><button class="btn ghost" id="rvCopy">📋 複製藍圖</button>
+      <button class="btn ghost" id="rvPrint">🖨️ 列印</button></div>
+    <div class="navrow"><button class="btn ghost" id="rvClose">關閉，去謄寫</button>
+      <button class="btn gold" id="rvRedo">🔄 再挑戰一次</button></div>
+    <div class="fieldhint" style="margin-top:8px">再挑戰會換一組打亂的選項、重新想一次；分數取最高的那次，寫得更好才會再加 XP。</div>`;
+  s.querySelector("#rvCopy").onclick=()=>copyPlan(q);
+  s.querySelector("#rvPrint").onclick=()=>window.print();
+  s.querySelector("#rvClose").onclick=closeModal;
+  s.querySelector("#rvRedo").onclick=()=>redoPlan(q);
+  document.getElementById("modal").classList.add("on");renderQuests();
+}
+// 把藍圖整理成可以貼到別的地方的純文字
+function planText(q){
+  const pl=S.plans[q.id];if(!pl)return "";
+  return `《${q.title}》寫作藍圖（${q.type}）\n`+
+    pl.segTexts.map((sg,i)=>`第${i+1}段 ${q.segs[i].t}${q.segs[i].main?" ⭐":""}：${sg||"—"}`).join("\n")+
+    `\n\n提醒：主場景那段在稿紙上放大成 150 字左右，全文目標 500 字左右。`;
+}
+function copyPlan(q){
+  const txt=planText(q);
+  const ok=()=>toast("藍圖已複製，貼到哪裡都行 📋");
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(ok,()=>fallback());}
+  else fallback();
+  function fallback(){                       // http 或 file:// 開啟時用舊方法
+    const ta=document.createElement("textarea");ta.value=txt;
+    ta.style.cssText="position:fixed;top:-999px";document.body.appendChild(ta);
+    ta.select();try{document.execCommand("copy");ok();}catch(e){toast("這個瀏覽器不能自動複製，長按選取文字吧");}
+    ta.remove();
+  }
+}
+// 進度匯出／匯入：換手機或清快取才不會前功盡棄
+function exportSave(){
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:"application/json"}));
+  a.download="作文冒險進度-"+(S.name?S.name+"-":"")+new Date().toISOString().slice(0,10)+".json";
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+  toast("進度已匯出，檔案收好就不怕不見了 💾");
+}
+function importSave(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    let d;try{d=JSON.parse(r.result);}catch(e){d=null;}
+    if(!d||typeof d!=="object"||typeof d.xp!=="number"){toast("這個檔案讀不出來，請選匯出的那個 .json 檔");return;}
+    if(!confirm("要用這個檔案取代目前的進度嗎？"))return;
+    S=Object.assign(blank(),d);S.lvl=levelFromXp(S.xp);PS=null;
+    save();renderAll();renderChecks();
+    toast("進度匯入完成，歡迎回來 🎉");
+  };
+  r.readAsText(file);
+}
+function finishWrite(q){
+  S.done[q.id]=true;gainXp(q.writeXp);
+  const map={記敘:"s1",抒情:"s3",想像:"s1",擬人:"s3",說明:"s2"};
+  addSkill(map[q.type]||"s1",1);addSkill("s3",1);
+  checkBadges();save();renderAll();
+  toast("📖 完成謄寫！+"+q.writeXp+" XP");maybeLevelUp();
+  setTimeout(()=>openCheck(q),800);   // 稿紙還在手上，順手做這一篇的自我檢查
+}
+// 每一篇各自檢查一次（+20 XP、錯字與格式 +1）
+function openCheck(q){
+  if(S.checks[q.id]){toast("這篇已經檢查過了 👍");return;}
+  const s=document.getElementById("sheetBody");
+  s.innerHTML=`<h3>✅ 檢查一下《${q.title}》</h3>
+    <div class="fieldhint">拿著你剛寫好的稿紙，一項一項對過去。全部打勾就 +20 XP、技能「錯字與格式」+1。</div>
+    <div id="ckList"></div>
+    <div class="navrow"><button class="btn ghost" id="ckLater">等一下再檢查</button>
+      <button class="btn gold" id="ckDone" disabled>完成檢查 +20 XP</button></div>`;
+  const box=s.querySelector("#ckList"),btn=s.querySelector("#ckDone");
+  CHECKS.forEach(c=>{
+    const el=document.createElement("div");el.className="checkitem";
+    el.innerHTML=`<div class="cbox">✓</div><span>${c}</span>`;
+    el.onclick=()=>{el.classList.toggle("ck");
+      btn.disabled=![...box.children].every(x=>x.classList.contains("ck"));};
+    box.appendChild(el);
+  });
+  s.querySelector("#ckLater").onclick=closeModal;
+  btn.onclick=()=>{
+    if(S.checks[q.id])return;
+    S.checks[q.id]=true;addSkill("s4",1);gainXp(20);
+    checkBadges();save();renderAll();closeModal();
+    toast("🎉 檢查完成！+20 XP，錯字與格式 +1");maybeLevelUp();
+  };
+  document.getElementById("modal").classList.add("on");
+}
+
+// 攻略頁這份是「隨時可以看的清單」，勾了不計分；真正計分的檢查在謄寫完之後跳出來
+function renderChecks(){
+  const box=document.getElementById("checkList");box.innerHTML="";
+  CHECKS.forEach(c=>{
+    const el=document.createElement("div");el.className="checkitem";
+    el.innerHTML=`<div class="cbox">✓</div><span>${c}</span>`;
+    el.onclick=()=>el.classList.toggle("ck");
+    box.appendChild(el);
+  });
+  renderCheckNote();
+}
+function renderCheckNote(){
+  const n=document.getElementById("checkNote");if(!n)return;
+  const c=Object.keys(S.checks||{}).length;
+  n.textContent=c>=QUESTS.length
+    ?"每一篇都檢查過了，太確實了 🎉"
+    :"這份清單隨時可以看。計分的檢查會在你按「② 謄寫完成」之後跳出來，每一篇各檢查一次（已檢查 "+c+"/"+QUESTS.length+" 篇）。";
+}
+function renderLadder(){
+  const box=document.getElementById("ladder");box.innerHTML="";
+  LADDER.forEach(l=>{const el=document.createElement("div");
+    el.style.cssText="display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line)";
+    el.innerHTML=`<b style="color:${l.c};flex-shrink:0;width:56px">${l.lv}</b><span style="font-size:14px">${l.d}</span>`;
+    box.appendChild(el);});
+}
+function renderSkills(){
+  const box=document.getElementById("skillList");box.innerHTML="";
+  SKILLS.forEach(sk=>{const val=S.skills[sk.id]||0;const el=document.createElement("div");el.className="skill";
+    let pips="";for(let i=0;i<sk.max;i++)pips+=`<div class="pip ${i<val?'fill':''}"></div>`;
+    el.innerHTML=`<div class="skhead"><div class="skicon" style="background:${sk.bg}">${sk.icon}</div>
+      <b>${sk.name}</b><span class="lv">Lv.${val}/${sk.max}</span></div><div class="pips">${pips}</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:5px">${sk.desc}</div>`;box.appendChild(el);});
+}
+function renderBadges(){
+  const box=document.getElementById("badgeGrid");box.innerHTML="";
+  BADGES.forEach(b=>{const got=S.badges[b.id];const el=document.createElement("div");
+    el.className="bg"+(got?" got":"");
+    el.innerHTML=`<div class="em">${b.em}</div><div class="bn">${b.n}</div><div class="bd">${b.d}</div>`;box.appendChild(el);});
+}
+function gainXp(n){S.xp+=n}
+function addSkill(id,n){S.skills[id]=Math.min(5,(S.skills[id]||0)+n)}
+function checkBadges(){
+  const dn=Object.keys(S.done).length;
+  if(Object.keys(S.plans).length>=1)S.badges.b_plan1=true;
+  if(dn>=1)S.badges.b_first=true;if(dn>=3)S.badges.b_three=true;
+  if(dn>=QUESTS.length)S.badges.b_all=true;
+  if(dn>=10)S.badges.b_ten=true;
+  const types=new Set(QUESTS.filter(q=>S.done[q.id]).map(q=>q.type));
+  if(types.size>=5)S.badges.b_five=true;
+  if((S.skills.s3||0)>=5)S.badges.b_paint=true;
+  if(S.lvl>=3)S.badges.b_lv3=true;if(S.lvl>=6)S.badges.b_mvp=true;
+}
+function maybeLevelUp(){
+  const nl=levelFromXp(S.xp);
+  if(nl>S.lvl){S.lvl=nl;checkBadges();save();renderAll();
+    document.getElementById("luLvl").textContent="Lv."+nl;
+    document.getElementById("luRank").textContent=rankName(nl);
+    document.getElementById("luMsg").textContent=(S.name?S.name+"，":"")+"恭喜升級！點一下繼續 →";
+    document.getElementById("levelup").classList.add("on");confetti();}
+}
+function renderAll(){renderHero();renderQuests();renderSkills();renderBadges();renderCheckNote();}
+function closeModal(){PS=null;document.getElementById("modal").classList.remove("on")}
+document.getElementById("modal").onclick=e=>{
+  if(e.target.id!=="modal")return;
+  if(NAMEGATE){toast("先取個名字才能出發喔 🙂");return;}
+  if(PS){toast("要離開的話按下面的『取消』，內容有幫你留著 🙂");return;}  // 規劃中不讓誤觸背景關掉
+  closeModal();};
+let toastTimer;
+function toast(msg){
+  let t=document.getElementById("toast");
+  if(!t){t=document.createElement("div");t.id="toast";
+    t.style.cssText="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--gold);padding:12px 20px;border-radius:12px;font-weight:700;font-size:14px;z-index:70;box-shadow:0 10px 30px rgba(0,0,0,.4);border:1px solid var(--gold);transition:opacity .4s;max-width:88vw;text-align:center";
+    document.body.appendChild(t)}
+  t.textContent=msg;t.style.opacity="1";clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.opacity="0",2200);
+}
+function confetti(){
+  const cols=["#e0a531","#2e9e6b","#3f74c0","#e0603f","#8a5cc0"];
+  for(let i=0;i<40;i++){const c=document.createElement("div");c.className="confetti";
+    c.style.left=Math.random()*100+"vw";c.style.background=cols[i%cols.length];
+    c.style.transform="rotate("+Math.random()*360+"deg)";document.body.appendChild(c);
+    const dur=1500+Math.random()*1500;
+    c.animate([{top:"-20px",opacity:1},{top:"100vh",opacity:.9}],{duration:dur,easing:"cubic-bezier(.3,.7,.5,1)"});
+    setTimeout(()=>c.remove(),dur);}
+}
+document.querySelectorAll(".tab").forEach(t=>{t.onclick=()=>{
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+  document.querySelectorAll(".panel").forEach(x=>x.classList.remove("on"));
+  t.classList.add("on");document.getElementById(t.dataset.tab).classList.add("on");};});
+function hardReset(){if(confirm("確定要清空所有進度，重新開始嗎？")){
+  PS=null;S=blank();save();renderAll();renderChecks();openNameGate();
+  document.querySelectorAll(".checkitem").forEach(x=>x.classList.remove("ck"));toast("已重新開始，出發吧！");}}
+renderAll();renderChecks();renderLadder();
+if(!S.name)openNameGate();
+</script>
+</body>
+</html>

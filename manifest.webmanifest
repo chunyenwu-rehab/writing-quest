@@ -1,0 +1,17 @@
+{
+  "name": "作文冒險：中檢初級闖關",
+  "short_name": "作文冒險",
+  "description": "給高年級小學生的遊戲化作文練習，用闖關的方式準備全民中文能力檢定（CWT）初等寫作。",
+  "lang": "zh-Hant",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#16233f",
+  "theme_color": "#1b2a4a",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
