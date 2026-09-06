@@ -140,6 +140,9 @@
   textarea,input.txt{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;
     font-family:inherit;font-size:16px;color:var(--ink);background:#fffdf7;resize:vertical;line-height:1.7}
   textarea:focus,input.txt:focus{outline:none;border-color:var(--gold)}
+  /* 還沒寫的欄位：手機上訊息容易被鍵盤蓋住，所以直接在欄位上標出來 */
+  textarea.warn{border-color:var(--coral);background:#fbeae6;animation:nudge .4s}
+  @keyframes nudge{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   .segblue{border-left:4px solid #3f74c0;background:#eef4fb;border-radius:8px;padding:9px 12px;font-size:13.5px;margin-bottom:8px}
   .segblue b{color:#2d5490}
   .optlist{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
@@ -157,6 +160,7 @@
     margin-top:4px;background:#fff8e8;border-radius:9px;padding:8px 11px;transition:.2s}
   .livexp .tags{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end}
   .livexp .tg{background:var(--jade);color:#fff;font-size:10.5px;padding:2px 7px;border-radius:999px;font-weight:800}
+  .livexp .tg.wn{background:var(--coral)}
   .navrow{display:flex;gap:8px;margin-top:16px}.navrow .btn{flex:1}
   .okmsg{background:#e6f4ec;border-radius:10px;padding:10px 12px;font-size:13.5px;color:#1d6a44;margin-top:10px;display:none}
   .okmsg.on{display:block;animation:fade .3s}
@@ -841,7 +845,7 @@ function drawPlan(q){
       </div>
       <div class="okmsg" id="ok0"></div>`;
   }else if(p.step===1){
-    inner=`<div class="fieldhint">照順序，每段動手打一點內容。寫越具體、用越多技巧，XP 越高！</div>`+
+    inner=`<div class="fieldhint">照順序，<b>${q.segs.length} 段都要打一點內容</b>（往下滑，別漏掉最後一段）。寫越具體、用越多技巧，XP 越高！</div>`+
       q.segs.map((seg,i)=>`
         <div class="segblue"><b>第${i+1}段 · ${seg.t}${seg.main?' ⭐':''}</b>　${seg.d}</div>
         <textarea data-seg="${i}" rows="2" placeholder="這段我要寫…">${esc(p.segTexts[i])}</textarea>
@@ -881,16 +885,19 @@ function drawPlan(q){
   }else if(p.step===1){
     s.querySelectorAll("textarea[data-seg]").forEach(ta=>{
       const i=+ta.dataset.seg;
-      const upd=()=>{p.segTexts[i]=ta.value;liveXp(s,`[data-lx="${i}"]`,ta.value);saveDraftSoon();};
+      const upd=()=>{p.segTexts[i]=ta.value;ta.classList.remove("warn");
+        liveXp(s,`[data-lx="${i}"]`,ta.value,false,!q.segs[i].main);saveDraftSoon();};
       ta.oninput=upd;upd();
     });
   }else if(p.step===2){
     const ta=s.querySelector("textarea[data-main]");
-    const upd=()=>{p.segTexts[mainIdx]=ta.value;liveXp(s,'[data-lx="main"]',ta.value,true);saveDraftSoon();};
+    const upd=()=>{p.segTexts[mainIdx]=ta.value;ta.classList.remove("warn");
+      liveXp(s,'[data-lx="main"]',ta.value,true,false);saveDraftSoon();};
     ta.oninput=upd;upd();
   }else if(p.step===3){
     const ta=s.querySelector("textarea[data-ending]");
-    const upd=()=>{p.segTexts[endIdx]=ta.value;liveXp(s,'[data-lx="ending"]',ta.value);saveDraftSoon();};
+    const upd=()=>{p.segTexts[endIdx]=ta.value;ta.classList.remove("warn");
+      liveXp(s,'[data-lx="ending"]',ta.value,false,false);saveDraftSoon();};
     ta.oninput=upd;upd();
   }
 
@@ -904,11 +911,24 @@ function drawPlan(q){
   next.onclick=()=>{if(!validStep(q))return;if(p.step<3){p.step++;saveDraft();drawPlan(q);}else finalizePlan(q);};
   nav.appendChild(next);
 }
-function liveXp(scope,sel,text,isMain){
+function liveXp(scope,sel,text,isMain,required){
   const box=scope.querySelector(sel);if(!box)return;
   const a=analyze(text);let xp=a.xp;if(isMain)xp=Math.round(xp*1.5);
   box.querySelector("[data-xp]").textContent="+"+xp+" XP";
-  box.querySelector(".tags").innerHTML=a.tags.map(t=>`<span class="tg">${t}</span>`).join("");
+  const tags=a.tags.map(t=>`<span class="tg">${t}</span>`);
+  // 這一格還沒寫的話先掛個標記，孩子按下一步前就知道哪裡還沒填
+  if(required!==false&&[...(text||"").trim()].length<4)tags.unshift('<span class="tg wn">還沒寫</span>');
+  box.querySelector(".tags").innerHTML=tags.join("");
+}
+// 擋下來的時候，直接把畫面捲到那一格、標紅、游標放進去
+function warnField(sel,msg){
+  const ta=document.querySelector(sel);
+  if(ta){
+    ta.classList.add("warn");
+    ta.scrollIntoView({block:"center"});   // 用瞬間捲動：平滑捲動會被接著的 focus 打斷
+    setTimeout(()=>{try{ta.focus({preventScroll:true})}catch(e){ta.focus()}},60);
+  }
+  toast(msg);return false;
 }
 function validStep(q){
   const p=PS;
@@ -917,13 +937,17 @@ function validStep(q){
     if(p.picks.length<need){toast("還有必寫的重點沒挑到！");return false;}
   }
   // 主場景那段可留到第 3 步再寫細，其他段這步至少要幾個字
-  if(p.step===1&&p.segTexts.some((t,i)=>!q.segs[i].main&&[...t.trim()].length<4)){
-    toast("每段都打一點內容吧（至少幾個字）");return false;
+  if(p.step===1){
+    const bad=p.segTexts.findIndex((t,i)=>!q.segs[i].main&&[...t.trim()].length<4);
+    if(bad>=0)return warnField(`textarea[data-seg="${bad}"]`,
+      `第${bad+1}段「${q.segs[bad].t}」還沒寫，打幾個字就好 ✍️`);
   }
   const mainIdx=q.segs.findIndex(x=>x.main);
-  if(p.step===2&&[...p.segTexts[mainIdx].trim()].length<10){toast("主場景是重頭戲，多寫一點！");return false;}
+  if(p.step===2&&[...p.segTexts[mainIdx].trim()].length<10)
+    return warnField("textarea[data-main]","主場景是重頭戲，再多寫一點（至少 10 個字）✍️");
   const endIdx=q.segs.findIndex(x=>x.ending);
-  if(p.step===3&&[...p.segTexts[endIdx].trim()].length<4){toast("結尾也打一點感受吧");return false;}
+  if(p.step===3&&[...p.segTexts[endIdx].trim()].length<4)
+    return warnField("textarea[data-ending]","結尾也打一點感受吧 ✍️");
   return true;
 }
 function finalizePlan(q){
@@ -1157,7 +1181,7 @@ let toastTimer;
 function toast(msg){
   let t=document.getElementById("toast");
   if(!t){t=document.createElement("div");t.id="toast";
-    t.style.cssText="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--gold);padding:12px 20px;border-radius:12px;font-weight:700;font-size:14px;z-index:70;box-shadow:0 10px 30px rgba(0,0,0,.4);border:1px solid var(--gold);transition:opacity .4s;max-width:88vw;text-align:center";
+    t.style.cssText="position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--gold);padding:12px 20px;border-radius:12px;font-weight:700;font-size:14px;z-index:70;box-shadow:0 10px 30px rgba(0,0,0,.4);border:1px solid var(--gold);transition:opacity .4s;max-width:88vw;text-align:center";
     document.body.appendChild(t)}
   t.textContent=msg;t.style.opacity="1";clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.opacity="0",2200);
 }
